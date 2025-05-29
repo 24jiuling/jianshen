@@ -23,15 +23,24 @@ spring:
         - id: user
           uri: lb://user-service
           predicates:
-            - Path=/users/**,/config/**
+            - Path=/users/**,/config/**,/jiaolianxinxi/**,/yuangong/**
         - id: strength
           uri: lb://strength-service
           predicates:
-            - Path=/jianshenhuodong/**,/jianshenqicai/**,/jianshenxiangmu/**
+            - Path=/jianshenhuodong/**,/jianshenqicai/**,/jianshenxiangmu/**,/zhidaoxiangmu/**
         - id: member
           uri: lb://member-service
           predicates:
             - Path=/huiyuan/**,/huiyuanka/**,/huiyuankaleixing/**
+        - id: file
+          uri: lb://file-service
+          predicates:
+            - Path=/jiepin/**
+
+logging:
+  level:
+    org.springframework.cloud.gateway: debug
+
 # ✅ 禁用数据库相关配置
 # ⚠️ 删除以下内容，如果你不使用数据库：
 # mybatis-plus: xxx（全部删除）
