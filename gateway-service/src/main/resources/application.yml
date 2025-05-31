@@ -2,21 +2,31 @@ server:
   port: 8080
 
 spring:
-
   main:
     web-application-type: reactive
   application:
     name: gateway
 
-
   cloud:
+    sentinel:
+      transport:
+        dashboard: localhost:8099
+      gateway:
+        enabled: true
+      scg:
+        fallback:
+          mode: response
+          response-status: 200
+          response-body: '{ "code": "500", "message": "服务降级返回" }'
+
     nacos:
       discovery:
-        server-addr: 192.168.220.1:8848
+        server-addr: 192.168.220.1:8848  # Nacos 服务发现地址
       config:
-        server-addr: 192.168.220.1:8848
-        file-extension: yaml
-        group: DEFAULT_GROUP
+        server-addr: 192.168.220.1:8848  # Nacos 配置中心地址
+        file-extension: yaml             # 指定配置格式，默认为 properties
+        group: DEFAULT_GROUP             # 分组，默认是 DEFAULT_GROUP
+        # namespace: your-namespace-id   # 可选：命名空间
 
     gateway:
       routes:
@@ -40,13 +50,11 @@ spring:
           uri: lb://redis-service
           predicates:
             - Path=/redis/**
-
-
 logging:
   level:
+    com.alibaba.nacos.client.naming: debug
+    org.springframework.cloud.client.discovery: debug
     org.springframework.cloud.gateway: debug
 
-# ✅ 禁用数据库相关配置
-# ⚠️ 删除以下内容，如果你不使用数据库：
-# mybatis-plus: xxx（全部删除）
 
+# ❌ 若项目未使用数据库，请确保已移除所有数据库相关配置，如 mybatis-plus、datasource 等

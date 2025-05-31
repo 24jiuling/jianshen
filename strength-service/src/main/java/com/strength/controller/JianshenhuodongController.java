@@ -1,21 +1,15 @@
 package com.strength.controller;
-
 import java.text.SimpleDateFormat;
 import java.util.*;
 import javax.servlet.http.HttpServletRequest;
-
-import com.alibaba.fastjson.JSON;
 import com.api.annotation.RemoteCacheable;
 import com.api.annotation.RemoteCacheEvict;
-import com.api.client.RedisFeignService;
 import com.common.core.utils.R;
 import com.common.entity.JianshenhuodongEntity;
 import com.common.entity.view.JianshenhuodongView;
 import com.common.utils.MPUtil;
 import com.common.utils.PageUtils;
-
 import com.strength.service.JianshenhuodongService;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
