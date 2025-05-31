@@ -12,12 +12,15 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 
+import com.api.annotation.RemoteCacheEvict;
+import com.api.annotation.RemoteCacheable;
 import com.common.annotation.IgnoreAuth;
+import com.common.core.utils.R;
 import com.common.entity.YuangongEntity;
 import com.common.entity.view.YuangongView;
 import com.common.utils.MPUtil;
 import com.common.utils.PageUtils;
-import com.common.utils.R;
+
 import com.user.service.TokenService;
 import com.user.service.YuangongService;
 import org.apache.commons.lang3.StringUtils;
@@ -92,6 +95,7 @@ public class YuangongController {
 	/**
      * 获取用户的session用户信息
      */
+	@RemoteCacheable(key = "'yuangong:session:' + #session.hashCode()")
     @RequestMapping("/session")
     public R getCurrUser(HttpServletRequest request){
     	Long id = (Long)request.getSession().getAttribute("userId");
@@ -118,6 +122,7 @@ public class YuangongController {
     /**
      * 后端列表
      */
+	@RemoteCacheable(key = "'yuangong:page:' + #params.hashCode()")
     @RequestMapping("/page")
     public R page(@RequestParam Map<String, Object> params,YuangongEntity yuangong,
 		HttpServletRequest request){
@@ -130,6 +135,7 @@ public class YuangongController {
     /**
      * 前端列表
      */
+	@RemoteCacheable(key = "'yuangong:list:' + #params.hashCode()")
     @RequestMapping("/list")
     public R list(@RequestParam Map<String, Object> params,YuangongEntity yuangong,
 		HttpServletRequest request){
@@ -141,6 +147,7 @@ public class YuangongController {
 	/**
      * 列表
      */
+	@RemoteCacheable(key = "'yuangong:lists:' + #yuangong.hashCode()")
     @RequestMapping("/lists")
     public R list( YuangongEntity yuangong){
        	EntityWrapper<YuangongEntity> ew = new EntityWrapper<YuangongEntity>();
@@ -151,6 +158,7 @@ public class YuangongController {
 	 /**
      * 查询
      */
+	 @RemoteCacheable(key = "'yuangong:page:' + #yuangong.hashCode()")
     @RequestMapping("/query")
     public R query(YuangongEntity yuangong){
         EntityWrapper< YuangongEntity> ew = new EntityWrapper< YuangongEntity>();
@@ -162,6 +170,7 @@ public class YuangongController {
     /**
      * 后端详情
      */
+	@RemoteCacheable(key = "'yuangong:info:' + #id")
     @RequestMapping("/info/{id}")
     public R info(@PathVariable("id") Long id){
         YuangongEntity yuangong = yuangongService.selectById(id);
@@ -171,6 +180,7 @@ public class YuangongController {
     /**
      * 前端详情
      */
+	@RemoteCacheable(key = "'yuangong:detail:' + #id")
     @RequestMapping("/detail/{id}")
     public R detail(@PathVariable("id") Long id){
         YuangongEntity yuangong = yuangongService.selectById(id);
@@ -183,6 +193,7 @@ public class YuangongController {
     /**
      * 后端保存
      */
+	@RemoteCacheEvict(key = "'yuangong:*'")
     @RequestMapping("/save")
     public R save(@RequestBody YuangongEntity yuangong, HttpServletRequest request){
     	yuangong.setId(new Date().getTime()+new Double(Math.floor(Math.random()*1000)).longValue());
@@ -199,6 +210,7 @@ public class YuangongController {
     /**
      * 前端保存
      */
+	@RemoteCacheEvict(key = "'yuangong:*'")
     @RequestMapping("/add")
     public R add(@RequestBody YuangongEntity yuangong, HttpServletRequest request){
     	yuangong.setId(new Date().getTime()+new Double(Math.floor(Math.random()*1000)).longValue());
@@ -215,6 +227,7 @@ public class YuangongController {
     /**
      * 修改
      */
+	@RemoteCacheEvict(key = "'yuangong:*'")
     @RequestMapping("/update")
     public R update(@RequestBody YuangongEntity yuangong, HttpServletRequest request){
         //ValidatorUtils.validateEntity(yuangong);
@@ -226,6 +239,7 @@ public class YuangongController {
     /**
      * 删除
      */
+	@RemoteCacheEvict(key = "'yuangong:*'")
     @RequestMapping("/delete")
     public R delete(@RequestBody Long[] ids){
         yuangongService.deleteBatchIds(Arrays.asList(ids));

@@ -12,11 +12,13 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 
+import com.api.annotation.RemoteCacheEvict;
+import com.api.annotation.RemoteCacheable;
+import com.common.core.utils.R;
 import com.common.entity.HuiyuankaEntity;
 import com.common.entity.view.HuiyuankaView;
 import com.common.utils.MPUtil;
 import com.common.utils.PageUtils;
-import com.common.utils.R;
 import com.member.service.HuiyuankaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -48,13 +50,15 @@ public class HuiyuankaController {
     /**
      * 后端列表
      */
+    @RemoteCacheable(key = "'huiyuanka:page:' + #params.hashCode()")
     @RequestMapping("/page")
     public R page(@RequestParam Map<String, Object> params, HuiyuankaEntity huiyuanka,
                   HttpServletRequest request){
-		String tableName = request.getSession().getAttribute("tableName").toString();
-		if(tableName.equals("huiyuan")) {
-			huiyuanka.setHuiyuanzhanghao((String)request.getSession().getAttribute("username"));
-		}
+//		String tableName = request.getSession().getAttribute("tableName").toString();
+//		if(tableName.equals("huiyuan")) {
+//			huiyuanka.setHuiyuanzhanghao((String)request.getSession().getAttribute("username"));
+//		}
+        huiyuanka.setHuiyuanzhanghao((String)request.getSession().getAttribute("username"));
         EntityWrapper<HuiyuankaEntity> ew = new EntityWrapper<HuiyuankaEntity>();
 		PageUtils page = huiyuankaService.queryPage(params, MPUtil.sort(MPUtil.between(MPUtil.likeOrEq(ew, huiyuanka), params), params));
 
@@ -64,6 +68,7 @@ public class HuiyuankaController {
     /**
      * 前端列表
      */
+    @RemoteCacheable(key = "'huiyuanka:list:' + #params.hashCode()")
     @RequestMapping("/list")
     public R list(@RequestParam Map<String, Object> params,HuiyuankaEntity huiyuanka,
 		HttpServletRequest request){
@@ -75,6 +80,7 @@ public class HuiyuankaController {
 	/**
      * 列表
      */
+    @RemoteCacheable(key = "'huiyuanka:lists:' + #huiyuanka.hashCode()")
     @RequestMapping("/lists")
     public R list( HuiyuankaEntity huiyuanka){
        	EntityWrapper<HuiyuankaEntity> ew = new EntityWrapper<HuiyuankaEntity>();
@@ -85,6 +91,7 @@ public class HuiyuankaController {
 	 /**
      * 查询
      */
+     @RemoteCacheable(key = "'huiyuanka:query:' + #huiyuanka.hashCode()")
     @RequestMapping("/query")
     public R query(HuiyuankaEntity huiyuanka){
         EntityWrapper< HuiyuankaEntity> ew = new EntityWrapper< HuiyuankaEntity>();
@@ -96,6 +103,7 @@ public class HuiyuankaController {
     /**
      * 后端详情
      */
+    @RemoteCacheable(key = "'huiyuanka:info:' + #id")
     @RequestMapping("/info/{id}")
     public R info(@PathVariable("id") Long id){
         HuiyuankaEntity huiyuanka = huiyuankaService.selectById(id);
@@ -105,6 +113,7 @@ public class HuiyuankaController {
     /**
      * 前端详情
      */
+    @RemoteCacheable(key = "'huiyuanka:detail:' + #id")
     @RequestMapping("/detail/{id}")
     public R detail(@PathVariable("id") Long id){
         HuiyuankaEntity huiyuanka = huiyuankaService.selectById(id);
@@ -117,6 +126,7 @@ public class HuiyuankaController {
     /**
      * 后端保存
      */
+    @RemoteCacheEvict(key = "'huiyuanka:*'")
     @RequestMapping("/save")
     public R save(@RequestBody HuiyuankaEntity huiyuanka, HttpServletRequest request){
     	huiyuanka.setId(new Date().getTime()+new Double(Math.floor(Math.random()*1000)).longValue());
@@ -128,6 +138,7 @@ public class HuiyuankaController {
     /**
      * 前端保存
      */
+    @RemoteCacheEvict(key = "'huiyuanka:*'")
     @RequestMapping("/add")
     public R add(@RequestBody HuiyuankaEntity huiyuanka, HttpServletRequest request){
     	huiyuanka.setId(new Date().getTime()+new Double(Math.floor(Math.random()*1000)).longValue());
@@ -139,6 +150,7 @@ public class HuiyuankaController {
     /**
      * 修改
      */
+    @RemoteCacheEvict(key = "'huiyuanka:*'")
     @RequestMapping("/update")
     public R update(@RequestBody HuiyuankaEntity huiyuanka, HttpServletRequest request){
         //ValidatorUtils.validateEntity(huiyuanka);
@@ -150,6 +162,7 @@ public class HuiyuankaController {
     /**
      * 删除
      */
+    @RemoteCacheEvict(key = "'huiyuanka:*'")
     @RequestMapping("/delete")
     public R delete(@RequestBody Long[] ids){
         huiyuankaService.deleteBatchIds(Arrays.asList(ids));

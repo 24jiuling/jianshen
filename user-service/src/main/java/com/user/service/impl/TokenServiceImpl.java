@@ -6,9 +6,10 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.common.core.utils.CommonUtil;
 import com.common.dao.TokenDao;
 import com.common.entity.TokenEntity;
-import com.common.utils.CommonUtil;
+
 import com.common.utils.PageUtils;
 import com.common.utils.Query;
 import com.user.service.TokenService;

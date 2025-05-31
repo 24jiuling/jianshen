@@ -3,8 +3,6 @@ server:
     tomcat:
         uri-encoding: UTF-8
     port: 8084
-    servlet:
-        context-path: /member-service
 
 spring:
     application:
@@ -30,6 +28,7 @@ spring:
         max-request-size: 10MB
     resources:
       static-locations: classpath:static/,file:static/
+
 
 #mybatis
 mybatis-plus:

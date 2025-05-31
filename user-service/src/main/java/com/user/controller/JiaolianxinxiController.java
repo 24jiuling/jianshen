@@ -12,20 +12,19 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 
+import com.api.annotation.RemoteCacheEvict;
+import com.api.annotation.RemoteCacheable;
+import com.common.core.utils.R;
 import com.common.entity.JiaolianxinxiEntity;
 import com.common.entity.view.JiaolianxinxiView;
 import com.common.utils.MPUtil;
 import com.common.utils.PageUtils;
-import com.common.utils.R;
+
 import com.user.service.JiaolianxinxiService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 
@@ -44,11 +43,10 @@ public class JiaolianxinxiController {
     @Autowired
     private JiaolianxinxiService jiaolianxinxiService;
 
-
-
     /**
      * 后端列表
      */
+    @RemoteCacheable(key = "'jiaolianxinxi:page:' + #params.hashCode()")
     @RequestMapping("/page")
     public R page(@RequestParam Map<String, Object> params, JiaolianxinxiEntity jiaolianxinxi,
                   HttpServletRequest request){
@@ -61,6 +59,7 @@ public class JiaolianxinxiController {
     /**
      * 前端列表
      */
+    @RemoteCacheable(key = "'jiaolianxinxi:list:' + #jiaolianxinxi.hashCode()")
     @RequestMapping("/list")
     public R list(@RequestParam Map<String, Object> params,JiaolianxinxiEntity jiaolianxinxi,
 		HttpServletRequest request){
@@ -72,6 +71,7 @@ public class JiaolianxinxiController {
 	/**
      * 列表
      */
+    @RemoteCacheable(key = "'jiaolianxinxi:lists:' + #jiaolianxinxi.hashCode()")
     @RequestMapping("/lists")
     public R list( JiaolianxinxiEntity jiaolianxinxi){
        	EntityWrapper<JiaolianxinxiEntity> ew = new EntityWrapper<JiaolianxinxiEntity>();
@@ -82,6 +82,7 @@ public class JiaolianxinxiController {
 	 /**
      * 查询
      */
+     @RemoteCacheable(key = "'jiaolianxinxi:query:' + #jiaolianxinxi.hashCode()")
     @RequestMapping("/query")
     public R query(JiaolianxinxiEntity jiaolianxinxi){
         EntityWrapper< JiaolianxinxiEntity> ew = new EntityWrapper< JiaolianxinxiEntity>();
@@ -93,6 +94,7 @@ public class JiaolianxinxiController {
     /**
      * 后端详情
      */
+    @RemoteCacheable(key = "'jiaolianxinxi:info:' + #id")
     @RequestMapping("/info/{id}")
     public R info(@PathVariable("id") Long id){
         JiaolianxinxiEntity jiaolianxinxi = jiaolianxinxiService.selectById(id);
@@ -102,6 +104,7 @@ public class JiaolianxinxiController {
     /**
      * 前端详情
      */
+    @RemoteCacheable(key = "'jiaolianxinxi:detail:' + #id")
     @RequestMapping("/detail/{id}")
     public R detail(@PathVariable("id") Long id){
         JiaolianxinxiEntity jiaolianxinxi = jiaolianxinxiService.selectById(id);
@@ -114,6 +117,7 @@ public class JiaolianxinxiController {
     /**
      * 后端保存
      */
+    @RemoteCacheEvict(key = "'jiaolianxinxi:*'")
     @RequestMapping("/save")
     public R save(@RequestBody JiaolianxinxiEntity jiaolianxinxi, HttpServletRequest request){
     	jiaolianxinxi.setId(new Date().getTime()+new Double(Math.floor(Math.random()*1000)).longValue());
@@ -125,6 +129,7 @@ public class JiaolianxinxiController {
     /**
      * 前端保存
      */
+    @RemoteCacheEvict(key = "'jiaolianxinxi:*'")
     @RequestMapping("/add")
     public R add(@RequestBody JiaolianxinxiEntity jiaolianxinxi, HttpServletRequest request){
     	jiaolianxinxi.setId(new Date().getTime()+new Double(Math.floor(Math.random()*1000)).longValue());
@@ -136,6 +141,7 @@ public class JiaolianxinxiController {
     /**
      * 修改
      */
+    @RemoteCacheEvict(key = "'jiaolianxinxi:*'")
     @RequestMapping("/update")
     public R update(@RequestBody JiaolianxinxiEntity jiaolianxinxi, HttpServletRequest request){
         //ValidatorUtils.validateEntity(jiaolianxinxi);
@@ -147,6 +153,7 @@ public class JiaolianxinxiController {
     /**
      * 删除
      */
+    @RemoteCacheEvict(key = "'jiaolianxinxi:*'")
     @RequestMapping("/delete")
     public R delete(@RequestBody Long[] ids){
         jiaolianxinxiService.deleteBatchIds(Arrays.asList(ids));

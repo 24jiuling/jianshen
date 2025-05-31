@@ -1,42 +1,30 @@
 package com.strength.controller;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import javax.servlet.http.HttpServletRequest;
 
-
+import com.alibaba.fastjson.JSON;
+import com.api.annotation.RemoteCacheable;
+import com.api.annotation.RemoteCacheEvict;
+import com.api.client.RedisFeignService;
+import com.common.core.utils.R;
 import com.common.entity.JianshenhuodongEntity;
 import com.common.entity.view.JianshenhuodongView;
 import com.common.utils.MPUtil;
 import com.common.utils.PageUtils;
-import com.common.utils.R;
+
 import com.strength.service.JianshenhuodongService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
-
-
 
 /**
  * 健身活动
  * 后端接口
- * @author
- * @email
- * @date 2021-05-12 00:06:36
  */
 @RestController
 @RequestMapping("/jianshenhuodong")
@@ -44,95 +32,90 @@ public class JianshenhuodongController {
     @Autowired
     private JianshenhuodongService jianshenhuodongService;
 
-
-
     /**
-     * 后端列表
+     * 后端分页列表
      */
+    @RemoteCacheable(key = "'jianshenhuodong:page:' + #params.hashCode()")
     @RequestMapping("/page")
-    public R page(@RequestParam Map<String, Object> params, JianshenhuodongEntity jianshenhuodong,
-                  HttpServletRequest request){
-		String tableName = request.getSession().getAttribute("tableName").toString();
-		if(tableName.equals("huiyuan")) {
-			jianshenhuodong.setHuiyuanzhanghao((String)request.getSession().getAttribute("username"));
-		}
-        EntityWrapper<JianshenhuodongEntity> ew = new EntityWrapper<JianshenhuodongEntity>();
-		PageUtils page = jianshenhuodongService.queryPage(params, MPUtil.sort(MPUtil.between(MPUtil.likeOrEq(ew, jianshenhuodong), params), params));
-
+    public R page(@RequestParam Map<String, Object> params, JianshenhuodongEntity jianshenhuodong, HttpServletRequest request){
+        EntityWrapper<JianshenhuodongEntity> ew = new EntityWrapper<>();
+        PageUtils page = jianshenhuodongService.queryPage(params, MPUtil.sort(MPUtil.between(MPUtil.likeOrEq(ew, jianshenhuodong), params), params));
         return R.ok().put("data", page);
     }
 
     /**
-     * 前端列表
+     * 前端分页列表
      */
+    @RemoteCacheable(key = "'jianshenhuodong:list:' + #params.hashCode()")
     @RequestMapping("/list")
-    public R list(@RequestParam Map<String, Object> params,JianshenhuodongEntity jianshenhuodong,
-		HttpServletRequest request){
-        EntityWrapper<JianshenhuodongEntity> ew = new EntityWrapper<JianshenhuodongEntity>();
-		PageUtils page = jianshenhuodongService.queryPage(params, MPUtil.sort(MPUtil.between(MPUtil.likeOrEq(ew, jianshenhuodong), params), params));
+    public R list(@RequestParam Map<String, Object> params, JianshenhuodongEntity jianshenhuodong, HttpServletRequest request){
+        EntityWrapper<JianshenhuodongEntity> ew = new EntityWrapper<>();
+        PageUtils page = jianshenhuodongService.queryPage(params, MPUtil.sort(MPUtil.between(MPUtil.likeOrEq(ew, jianshenhuodong), params), params));
         return R.ok().put("data", page);
     }
 
-	/**
-     * 列表
+    /**
+     * 列表（无分页）
      */
+    @RemoteCacheable(key = "'jianshenhuodong:lists:' + #jianshenhuodong.hashCode()")
     @RequestMapping("/lists")
-    public R list( JianshenhuodongEntity jianshenhuodong){
-       	EntityWrapper<JianshenhuodongEntity> ew = new EntityWrapper<JianshenhuodongEntity>();
-      	ew.allEq(MPUtil.allEQMapPre( jianshenhuodong, "jianshenhuodong"));
-        return R.ok().put("data", jianshenhuodongService.selectListView(ew));
+    public R lists(JianshenhuodongEntity jianshenhuodong){
+        EntityWrapper<JianshenhuodongEntity> ew = new EntityWrapper<>();
+        ew.allEq(MPUtil.allEQMapPre(jianshenhuodong, "jianshenhuodong"));
+        List<JianshenhuodongView> list = jianshenhuodongService.selectListView(ew);
+        return R.ok().put("data", list);
     }
 
-	 /**
-     * 查询
+    /**
+     * 查询单个视图实体
      */
+    @RemoteCacheable(key = "'jianshenhuodong:query:' + #jianshenhuodong.hashCode()")
     @RequestMapping("/query")
     public R query(JianshenhuodongEntity jianshenhuodong){
-        EntityWrapper< JianshenhuodongEntity> ew = new EntityWrapper< JianshenhuodongEntity>();
- 		ew.allEq(MPUtil.allEQMapPre( jianshenhuodong, "jianshenhuodong"));
-		JianshenhuodongView jianshenhuodongView =  jianshenhuodongService.selectView(ew);
-		return R.ok("查询健身活动成功").put("data", jianshenhuodongView);
+        EntityWrapper<JianshenhuodongEntity> ew = new EntityWrapper<>();
+        ew.allEq(MPUtil.allEQMapPre(jianshenhuodong, "jianshenhuodong"));
+        JianshenhuodongView view = jianshenhuodongService.selectView(ew);
+        return R.ok("查询健身活动成功").put("data", view);
     }
 
     /**
      * 后端详情
      */
+    @RemoteCacheable(key = "'jianshenhuodong:info:' + #id")
     @RequestMapping("/info/{id}")
     public R info(@PathVariable("id") Long id){
-        JianshenhuodongEntity jianshenhuodong = jianshenhuodongService.selectById(id);
-        return R.ok().put("data", jianshenhuodong);
+        JianshenhuodongEntity entity = jianshenhuodongService.selectById(id);
+        return R.ok().put("data", entity);
     }
 
     /**
      * 前端详情
      */
+    @RemoteCacheable(key = "'jianshenhuodong:detail:' + #id")
     @RequestMapping("/detail/{id}")
     public R detail(@PathVariable("id") Long id){
-        JianshenhuodongEntity jianshenhuodong = jianshenhuodongService.selectById(id);
-        return R.ok().put("data", jianshenhuodong);
+        JianshenhuodongEntity entity = jianshenhuodongService.selectById(id);
+        return R.ok().put("data", entity);
     }
 
-
-
-
     /**
-     * 后端保存
+     * 后端保存（新增）
      */
+    @RemoteCacheEvict(key = "'jianshenhuodong:*'")
     @RequestMapping("/save")
     public R save(@RequestBody JianshenhuodongEntity jianshenhuodong, HttpServletRequest request){
-    	jianshenhuodong.setId(new Date().getTime()+new Double(Math.floor(Math.random()*1000)).longValue());
-    	//ValidatorUtils.validateEntity(jianshenhuodong);
+        jianshenhuodong.setId(new Date().getTime() + (long)(Math.floor(Math.random()*1000)));
         jianshenhuodongService.insert(jianshenhuodong);
         return R.ok();
     }
 
     /**
-     * 前端保存
+     * 前端保存（新增）
      */
+    @RemoteCacheEvict(key = "'jianshenhuodong:*'")
     @RequestMapping("/add")
     public R add(@RequestBody JianshenhuodongEntity jianshenhuodong, HttpServletRequest request){
-    	jianshenhuodong.setId(new Date().getTime()+new Double(Math.floor(Math.random()*1000)).longValue());
-    	//ValidatorUtils.validateEntity(jianshenhuodong);
+        jianshenhuodong.setId(new Date().getTime() + (long)(Math.floor(Math.random()*1000)));
         jianshenhuodongService.insert(jianshenhuodong);
         return R.ok();
     }
@@ -140,17 +123,17 @@ public class JianshenhuodongController {
     /**
      * 修改
      */
+    @RemoteCacheEvict(key = "'jianshenhuodong:*'")
     @RequestMapping("/update")
     public R update(@RequestBody JianshenhuodongEntity jianshenhuodong, HttpServletRequest request){
-        //ValidatorUtils.validateEntity(jianshenhuodong);
-        jianshenhuodongService.updateById(jianshenhuodong);//全部更新
+        jianshenhuodongService.updateById(jianshenhuodong);
         return R.ok();
     }
-
 
     /**
      * 删除
      */
+    @RemoteCacheEvict(key = "'jianshenhuodong:*'")
     @RequestMapping("/delete")
     public R delete(@RequestBody Long[] ids){
         jianshenhuodongService.deleteBatchIds(Arrays.asList(ids));
@@ -160,50 +143,43 @@ public class JianshenhuodongController {
     /**
      * 提醒接口
      */
-	@RequestMapping("/remind/{columnName}/{type}")
-	public R remindCount(@PathVariable("columnName") String columnName, HttpServletRequest request,
-						 @PathVariable("type") String type,@RequestParam Map<String, Object> map) {
-		map.put("column", columnName);
-		map.put("type", type);
+    @RequestMapping("/remind/{columnName}/{type}")
+    public R remindCount(@PathVariable("columnName") String columnName, HttpServletRequest request,
+                         @PathVariable("type") String type,@RequestParam Map<String, Object> map) {
+        map.put("column", columnName);
+        map.put("type", type);
 
-		if(type.equals("2")) {
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-			Calendar c = Calendar.getInstance();
-			Date remindStartDate = null;
-			Date remindEndDate = null;
-			if(map.get("remindstart")!=null) {
-				Integer remindStart = Integer.parseInt(map.get("remindstart").toString());
-				c.setTime(new Date());
-				c.add(Calendar.DAY_OF_MONTH,remindStart);
-				remindStartDate = c.getTime();
-				map.put("remindstart", sdf.format(remindStartDate));
-			}
-			if(map.get("remindend")!=null) {
-				Integer remindEnd = Integer.parseInt(map.get("remindend").toString());
-				c.setTime(new Date());
-				c.add(Calendar.DAY_OF_MONTH,remindEnd);
-				remindEndDate = c.getTime();
-				map.put("remindend", sdf.format(remindEndDate));
-			}
-		}
+        if(type.equals("2")) {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            Calendar c = Calendar.getInstance();
+            if(map.get("remindstart") != null) {
+                Integer remindStart = Integer.parseInt(map.get("remindstart").toString());
+                c.setTime(new Date());
+                c.add(Calendar.DAY_OF_MONTH, remindStart);
+                map.put("remindstart", sdf.format(c.getTime()));
+            }
+            if(map.get("remindend") != null) {
+                Integer remindEnd = Integer.parseInt(map.get("remindend").toString());
+                c.setTime(new Date());
+                c.add(Calendar.DAY_OF_MONTH, remindEnd);
+                map.put("remindend", sdf.format(c.getTime()));
+            }
+        }
 
-		Wrapper<JianshenhuodongEntity> wrapper = new EntityWrapper<JianshenhuodongEntity>();
-		if(map.get("remindstart")!=null) {
-			wrapper.ge(columnName, map.get("remindstart"));
-		}
-		if(map.get("remindend")!=null) {
-			wrapper.le(columnName, map.get("remindend"));
-		}
+        Wrapper<JianshenhuodongEntity> wrapper = new EntityWrapper<>();
+        if(map.get("remindstart") != null) {
+            wrapper.ge(columnName, map.get("remindstart"));
+        }
+        if(map.get("remindend") != null) {
+            wrapper.le(columnName, map.get("remindend"));
+        }
 
-		String tableName = request.getSession().getAttribute("tableName").toString();
-		if(tableName.equals("huiyuan")) {
-			wrapper.eq("huiyuanzhanghao", (String)request.getSession().getAttribute("username"));
-		}
+        String tableName = request.getSession().getAttribute("tableName").toString();
+        if(tableName.equals("huiyuan")) {
+            wrapper.eq("huiyuanzhanghao", (String)request.getSession().getAttribute("username"));
+        }
 
-		int count = jianshenhuodongService.selectCount(wrapper);
-		return R.ok().put("count", count);
-	}
-
-
-
+        int count = jianshenhuodongService.selectCount(wrapper);
+        return R.ok().put("count", count);
+    }
 }

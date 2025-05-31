@@ -1,13 +1,16 @@
 package com.member.controller;
 
+import com.api.annotation.RemoteCacheEvict;
+import com.api.annotation.RemoteCacheable;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
+
 import com.common.annotation.IgnoreAuth;
+import com.common.core.utils.R;
 import com.common.entity.HuiyuanEntity;
 import com.common.entity.view.HuiyuanView;
 import com.common.utils.MPUtil;
 import com.common.utils.PageUtils;
-import com.common.utils.R;
 import com.member.service.HuiyuanService;
 import com.user.service.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -113,13 +116,15 @@ public class HuiyuanController {
     /**
      * 后端列表
      */
+	@RemoteCacheable(key = "'huiyuan:page:' + #params.hashCode()")
     @RequestMapping("/page")
     public R page(@RequestParam Map<String, Object> params, HuiyuanEntity huiyuan,
 				  HttpServletRequest request){
-		String tableName = request.getSession().getAttribute("tableName").toString();
-		if(tableName.equals("huiyuan")) {
-			huiyuan.setHuiyuanzhanghao((String)request.getSession().getAttribute("username"));
-		}
+//		String tableName = request.getSession().getAttribute("tableName").toString();
+//		if(tableName.equals("huiyuan")) {
+//			huiyuan.setHuiyuanzhanghao((String)request.getSession().getAttribute("username"));
+//		}
+		huiyuan.setHuiyuanzhanghao((String)request.getSession().getAttribute("username"));
         EntityWrapper<HuiyuanEntity> ew = new EntityWrapper<HuiyuanEntity>();
 		PageUtils page = huiyuanService.queryPage(params, MPUtil.sort(MPUtil.between(MPUtil.likeOrEq(ew, huiyuan), params), params));
 
@@ -129,6 +134,7 @@ public class HuiyuanController {
     /**
      * 前端列表
      */
+	@RemoteCacheable(key = "'huiyuan:list:' + #params.hashCode()")
     @RequestMapping("/list")
     public R list(@RequestParam Map<String, Object> params,HuiyuanEntity huiyuan,
 		HttpServletRequest request){
@@ -140,6 +146,7 @@ public class HuiyuanController {
 	/**
      * 列表
      */
+	@RemoteCacheable(key = "'huiyuan:lists:' + #huiyuan.hashCode()")
     @RequestMapping("/lists")
     public R list( HuiyuanEntity huiyuan){
        	EntityWrapper<HuiyuanEntity> ew = new EntityWrapper<HuiyuanEntity>();
@@ -150,6 +157,7 @@ public class HuiyuanController {
 	 /**
      * 查询
      */
+	 @RemoteCacheable(key = "'huiyuan:query:' + #huiyuan.hashCode()")
     @RequestMapping("/query")
     public R query(HuiyuanEntity huiyuan){
         EntityWrapper< HuiyuanEntity> ew = new EntityWrapper< HuiyuanEntity>();
@@ -161,6 +169,7 @@ public class HuiyuanController {
     /**
      * 后端详情
      */
+	@RemoteCacheable(key = "'huiyuan:info:' + #id")
     @RequestMapping("/info/{id}")
     public R info(@PathVariable("id") Long id){
         HuiyuanEntity huiyuan = huiyuanService.selectById(id);
@@ -170,6 +179,7 @@ public class HuiyuanController {
     /**
      * 前端详情
      */
+	@RemoteCacheable(key = "'huiyuan:detail:' + #id")
     @RequestMapping("/detail/{id}")
     public R detail(@PathVariable("id") Long id){
         HuiyuanEntity huiyuan = huiyuanService.selectById(id);
@@ -182,6 +192,7 @@ public class HuiyuanController {
     /**
      * 后端保存
      */
+	@RemoteCacheEvict(key = "'huiyuan:*'")
     @RequestMapping("/save")
     public R save(@RequestBody HuiyuanEntity huiyuan, HttpServletRequest request){
     	huiyuan.setId(new Date().getTime()+new Double(Math.floor(Math.random()*1000)).longValue());
@@ -198,6 +209,7 @@ public class HuiyuanController {
     /**
      * 前端保存
      */
+	@RemoteCacheEvict(key = "'huiyuan:*'")
     @RequestMapping("/add")
     public R add(@RequestBody HuiyuanEntity huiyuan, HttpServletRequest request){
     	huiyuan.setId(new Date().getTime()+new Double(Math.floor(Math.random()*1000)).longValue());
@@ -214,6 +226,7 @@ public class HuiyuanController {
     /**
      * 修改
      */
+	@RemoteCacheEvict(key = "'huiyuan:*'")
     @RequestMapping("/update")
     public R update(@RequestBody HuiyuanEntity huiyuan, HttpServletRequest request){
         //ValidatorUtils.validateEntity(huiyuan);
@@ -225,6 +238,7 @@ public class HuiyuanController {
     /**
      * 删除
      */
+	@RemoteCacheEvict(key = "'huiyuan:*'")
     @RequestMapping("/delete")
     public R delete(@RequestBody Long[] ids){
         huiyuanService.deleteBatchIds(Arrays.asList(ids));

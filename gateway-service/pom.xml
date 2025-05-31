@@ -21,9 +21,15 @@
         <!-- 公共模块 -->
         <dependency>
             <groupId>com.common</groupId>
-            <artifactId>common-service</artifactId>
+            <artifactId>common-db</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>com.common.core</groupId>
+            <artifactId>common-core</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
 
         <!-- 网关核心 -->
         <dependency>

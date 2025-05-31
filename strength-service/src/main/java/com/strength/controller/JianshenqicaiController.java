@@ -1,133 +1,111 @@
 package com.strength.controller;
-
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import javax.servlet.http.HttpServletRequest;
-
-
+import com.api.annotation.RemoteCacheable;
+import com.api.annotation.RemoteCacheEvict;
+import com.common.core.utils.R;
 import com.common.entity.JianshenqicaiEntity;
-import com.common.entity.view.JianshenqicaiView;
 import com.common.utils.MPUtil;
 import com.common.utils.PageUtils;
-import com.common.utils.R;
 import com.strength.service.JianshenqicaiService;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
-import com.baomidou.mybatisplus.mapper.Wrapper;
-
-
 /**
  * 健身器材
  * 后端接口
- * @author
- * @email
- * @date 2021-05-12 00:06:36
  */
 @RestController
 @RequestMapping("/jianshenqicai")
 public class JianshenqicaiController {
+
     @Autowired
     private JianshenqicaiService jianshenqicaiService;
 
-
-
     /**
-     * 后端列表
+     * 后端分页列表
      */
+    @RemoteCacheable(key = "'jianshenqicai:page:' + #params.hashCode()")
     @RequestMapping("/page")
-    public R page(@RequestParam Map<String, Object> params, JianshenqicaiEntity jianshenqicai,
-                  HttpServletRequest request){
-        EntityWrapper<JianshenqicaiEntity> ew = new EntityWrapper<JianshenqicaiEntity>();
-		PageUtils page = jianshenqicaiService.queryPage(params, MPUtil.sort(MPUtil.between(MPUtil.likeOrEq(ew, jianshenqicai), params), params));
-
+    public R page(@RequestParam Map<String, Object> params, JianshenqicaiEntity jianshenqicai, HttpServletRequest request) {
+        EntityWrapper<JianshenqicaiEntity> ew = new EntityWrapper<>();
+        PageUtils page = jianshenqicaiService.queryPage(params, MPUtil.sort(MPUtil.between(MPUtil.likeOrEq(ew, jianshenqicai), params), params));
         return R.ok().put("data", page);
     }
 
     /**
-     * 前端列表
+     * 前端分页列表
      */
+    @RemoteCacheable(key = "'jianshenqicai:list:' + #params.hashCode()")
     @RequestMapping("/list")
-    public R list(@RequestParam Map<String, Object> params,JianshenqicaiEntity jianshenqicai,
-		HttpServletRequest request){
-        EntityWrapper<JianshenqicaiEntity> ew = new EntityWrapper<JianshenqicaiEntity>();
-		PageUtils page = jianshenqicaiService.queryPage(params, MPUtil.sort(MPUtil.between(MPUtil.likeOrEq(ew, jianshenqicai), params), params));
+    public R list(@RequestParam Map<String, Object> params, JianshenqicaiEntity jianshenqicai, HttpServletRequest request) {
+        EntityWrapper<JianshenqicaiEntity> ew = new EntityWrapper<>();
+        PageUtils page = jianshenqicaiService.queryPage(params, MPUtil.sort(MPUtil.between(MPUtil.likeOrEq(ew, jianshenqicai), params), params));
         return R.ok().put("data", page);
     }
 
-	/**
-     * 列表
+    /**
+     * 列表（无分页）
      */
+    @RemoteCacheable(key = "'jianshenqicai:lists:' + #jianshenqicai.hashCode()")
     @RequestMapping("/lists")
-    public R list( JianshenqicaiEntity jianshenqicai){
-       	EntityWrapper<JianshenqicaiEntity> ew = new EntityWrapper<JianshenqicaiEntity>();
-      	ew.allEq(MPUtil.allEQMapPre( jianshenqicai, "jianshenqicai"));
-        return R.ok().put("data", jianshenqicaiService.selectListView(ew));
+    public R lists(JianshenqicaiEntity jianshenqicai) {
+        EntityWrapper<JianshenqicaiEntity> ew = new EntityWrapper<>();
+        ew.allEq(MPUtil.allEQMapPre(jianshenqicai, "jianshenqicai"));
+        List<JianshenqicaiEntity> list = jianshenqicaiService.selectList(ew);
+        return R.ok().put("data", list);
     }
 
-	 /**
-     * 查询
+    /**
+     * 查询单个实体
      */
+    @RemoteCacheable(key = "'jianshenqicai:query:' + #jianshenqicai.hashCode()")
     @RequestMapping("/query")
-    public R query(JianshenqicaiEntity jianshenqicai){
-        EntityWrapper< JianshenqicaiEntity> ew = new EntityWrapper< JianshenqicaiEntity>();
- 		ew.allEq(MPUtil.allEQMapPre( jianshenqicai, "jianshenqicai"));
-		JianshenqicaiView jianshenqicaiView =  jianshenqicaiService.selectView(ew);
-		return R.ok("查询健身器材成功").put("data", jianshenqicaiView);
+    public R query(JianshenqicaiEntity jianshenqicai) {
+        EntityWrapper<JianshenqicaiEntity> ew = new EntityWrapper<>();
+        ew.allEq(MPUtil.allEQMapPre(jianshenqicai, "jianshenqicai"));
+        JianshenqicaiEntity entity = jianshenqicaiService.selectOne(ew);
+        return R.ok("查询健身器材成功").put("data", entity);
     }
 
     /**
      * 后端详情
      */
+    @RemoteCacheable(key = "'jianshenqicai:info:' + #id")
     @RequestMapping("/info/{id}")
-    public R info(@PathVariable("id") Long id){
-        JianshenqicaiEntity jianshenqicai = jianshenqicaiService.selectById(id);
-        return R.ok().put("data", jianshenqicai);
+    public R info(@PathVariable("id") Long id) {
+        JianshenqicaiEntity entity = jianshenqicaiService.selectById(id);
+        return R.ok().put("data", entity);
     }
 
     /**
      * 前端详情
      */
+    @RemoteCacheable(key = "'jianshenqicai:detail:' + #id")
     @RequestMapping("/detail/{id}")
-    public R detail(@PathVariable("id") Long id){
-        JianshenqicaiEntity jianshenqicai = jianshenqicaiService.selectById(id);
-        return R.ok().put("data", jianshenqicai);
+    public R detail(@PathVariable("id") Long id) {
+        JianshenqicaiEntity entity = jianshenqicaiService.selectById(id);
+        return R.ok().put("data", entity);
     }
 
-
-
-
     /**
-     * 后端保存
+     * 后端保存（新增）
      */
+    @RemoteCacheEvict(key = "'jianshenqicai:*'")
     @RequestMapping("/save")
-    public R save(@RequestBody JianshenqicaiEntity jianshenqicai, HttpServletRequest request){
-    	jianshenqicai.setId(new Date().getTime()+new Double(Math.floor(Math.random()*1000)).longValue());
-    	//ValidatorUtils.validateEntity(jianshenqicai);
+    public R save(@RequestBody JianshenqicaiEntity jianshenqicai, HttpServletRequest request) {
+        jianshenqicai.setId(new Date().getTime() + (long)(Math.floor(Math.random() * 1000)));
         jianshenqicaiService.insert(jianshenqicai);
         return R.ok();
     }
 
     /**
-     * 前端保存
+     * 前端保存（新增）
      */
+    @RemoteCacheEvict(key = "'jianshenqicai:*'")
     @RequestMapping("/add")
-    public R add(@RequestBody JianshenqicaiEntity jianshenqicai, HttpServletRequest request){
-    	jianshenqicai.setId(new Date().getTime()+new Double(Math.floor(Math.random()*1000)).longValue());
-    	//ValidatorUtils.validateEntity(jianshenqicai);
+    public R add(@RequestBody JianshenqicaiEntity jianshenqicai, HttpServletRequest request) {
+        jianshenqicai.setId(new Date().getTime() + (long)(Math.floor(Math.random() * 1000)));
         jianshenqicaiService.insert(jianshenqicai);
         return R.ok();
     }
@@ -135,66 +113,20 @@ public class JianshenqicaiController {
     /**
      * 修改
      */
+    @RemoteCacheEvict(key = "'jianshenqicai:*'")
     @RequestMapping("/update")
-    public R update(@RequestBody JianshenqicaiEntity jianshenqicai, HttpServletRequest request){
-        //ValidatorUtils.validateEntity(jianshenqicai);
-        jianshenqicaiService.updateById(jianshenqicai);//全部更新
+    public R update(@RequestBody JianshenqicaiEntity jianshenqicai, HttpServletRequest request) {
+        jianshenqicaiService.updateById(jianshenqicai);
         return R.ok();
     }
-
 
     /**
      * 删除
      */
+    @RemoteCacheEvict(key = "'jianshenqicai:*'")
     @RequestMapping("/delete")
-    public R delete(@RequestBody Long[] ids){
+    public R delete(@RequestBody Long[] ids) {
         jianshenqicaiService.deleteBatchIds(Arrays.asList(ids));
         return R.ok();
     }
-
-    /**
-     * 提醒接口
-     */
-	@RequestMapping("/remind/{columnName}/{type}")
-	public R remindCount(@PathVariable("columnName") String columnName, HttpServletRequest request,
-						 @PathVariable("type") String type,@RequestParam Map<String, Object> map) {
-		map.put("column", columnName);
-		map.put("type", type);
-
-		if(type.equals("2")) {
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-			Calendar c = Calendar.getInstance();
-			Date remindStartDate = null;
-			Date remindEndDate = null;
-			if(map.get("remindstart")!=null) {
-				Integer remindStart = Integer.parseInt(map.get("remindstart").toString());
-				c.setTime(new Date());
-				c.add(Calendar.DAY_OF_MONTH,remindStart);
-				remindStartDate = c.getTime();
-				map.put("remindstart", sdf.format(remindStartDate));
-			}
-			if(map.get("remindend")!=null) {
-				Integer remindEnd = Integer.parseInt(map.get("remindend").toString());
-				c.setTime(new Date());
-				c.add(Calendar.DAY_OF_MONTH,remindEnd);
-				remindEndDate = c.getTime();
-				map.put("remindend", sdf.format(remindEndDate));
-			}
-		}
-
-		Wrapper<JianshenqicaiEntity> wrapper = new EntityWrapper<JianshenqicaiEntity>();
-		if(map.get("remindstart")!=null) {
-			wrapper.ge(columnName, map.get("remindstart"));
-		}
-		if(map.get("remindend")!=null) {
-			wrapper.le(columnName, map.get("remindend"));
-		}
-
-
-		int count = jianshenqicaiService.selectCount(wrapper);
-		return R.ok().put("count", count);
-	}
-
-
-
 }

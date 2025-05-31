@@ -11,11 +11,14 @@ import java.util.Date;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
+import com.api.annotation.RemoteCacheEvict;
+import com.api.annotation.RemoteCacheable;
+import com.common.core.utils.R;
 import com.common.entity.JiepinEntity;
 import com.common.entity.view.JiepinView;
 import com.common.utils.MPUtil;
 import com.common.utils.PageUtils;
-import com.common.utils.R;
+
 
 import com.file.service.JiepinService;
 import org.apache.commons.lang3.StringUtils;
@@ -49,13 +52,15 @@ public class JiepinController {
     /**
      * 后端列表
      */
+    @RemoteCacheable(key = "'jiepin:page:' + #params.hashCode()")
     @RequestMapping("/page")
     public R page(@RequestParam Map<String, Object> params, JiepinEntity jiepin,
                   HttpServletRequest request){
-		String tableName = request.getSession().getAttribute("tableName").toString();
-		if(tableName.equals("yuangong")) {
-			jiepin.setGonghao((String)request.getSession().getAttribute("username"));
-		}
+//		String tableName = request.getSession().getAttribute("tableName").toString();
+//		if(tableName.equals("yuangong")) {
+//			jiepin.setGonghao((String)request.getSession().getAttribute("username"));
+//		}
+        jiepin.setGonghao((String)request.getSession().getAttribute("username"));
         EntityWrapper<JiepinEntity> ew = new EntityWrapper<JiepinEntity>();
 		PageUtils page = jiepinService.queryPage(params, MPUtil.sort(MPUtil.between(MPUtil.likeOrEq(ew, jiepin), params), params));
 
@@ -65,6 +70,7 @@ public class JiepinController {
     /**
      * 前端列表
      */
+    @RemoteCacheable(key = "'jiepin:list:' + #params.hashCode()")
     @RequestMapping("/list")
     public R list(@RequestParam Map<String, Object> params,JiepinEntity jiepin,
 		HttpServletRequest request){
@@ -76,6 +82,7 @@ public class JiepinController {
 	/**
      * 列表
      */
+    @RemoteCacheable(key = "'jiepin:lists:' + #jiepin.hashCode()")
     @RequestMapping("/lists")
     public R list( JiepinEntity jiepin){
        	EntityWrapper<JiepinEntity> ew = new EntityWrapper<JiepinEntity>();
@@ -86,6 +93,7 @@ public class JiepinController {
 	 /**
      * 查询
      */
+     @RemoteCacheable(key = "'jiepin:query:' + #jiepin.hashCode()")
     @RequestMapping("/query")
     public R query(JiepinEntity jiepin){
         EntityWrapper< JiepinEntity> ew = new EntityWrapper< JiepinEntity>();
@@ -97,6 +105,7 @@ public class JiepinController {
     /**
      * 后端详情
      */
+    @RemoteCacheable(key = "'jiepin:info:' + #id")
     @RequestMapping("/info/{id}")
     public R info(@PathVariable("id") Long id){
         JiepinEntity jiepin = jiepinService.selectById(id);
@@ -106,6 +115,7 @@ public class JiepinController {
     /**
      * 前端详情
      */
+     @RemoteCacheable(key = "'jiepin:detail:' + #id")
     @RequestMapping("/detail/{id}")
     public R detail(@PathVariable("id") Long id){
         JiepinEntity jiepin = jiepinService.selectById(id);
@@ -118,6 +128,7 @@ public class JiepinController {
     /**
      * 后端保存
      */
+    @RemoteCacheEvict(key = "'jiepin:*'")
     @RequestMapping("/save")
     public R save(@RequestBody JiepinEntity jiepin, HttpServletRequest request){
     	jiepin.setId(new Date().getTime()+new Double(Math.floor(Math.random()*1000)).longValue());
@@ -129,6 +140,7 @@ public class JiepinController {
     /**
      * 前端保存
      */
+    @RemoteCacheEvict(key = "'jiepin:*'")
     @RequestMapping("/add")
     public R add(@RequestBody JiepinEntity jiepin, HttpServletRequest request){
     	jiepin.setId(new Date().getTime()+new Double(Math.floor(Math.random()*1000)).longValue());
@@ -140,6 +152,7 @@ public class JiepinController {
     /**
      * 修改
      */
+    @RemoteCacheEvict(key = "'jiepin:*'")
     @RequestMapping("/update")
     public R update(@RequestBody JiepinEntity jiepin, HttpServletRequest request){
         //ValidatorUtils.validateEntity(jiepin);
@@ -151,6 +164,7 @@ public class JiepinController {
     /**
      * 删除
      */
+    @RemoteCacheEvict(key = "'jiepin:*'")
     @RequestMapping("/delete")
     public R delete(@RequestBody Long[] ids){
         jiepinService.deleteBatchIds(Arrays.asList(ids));

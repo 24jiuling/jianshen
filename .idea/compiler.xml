@@ -2,31 +2,40 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <annotationProcessing>
+      <profile default="true" name="Default" enabled="true" />
       <profile name="Maven default annotation processors profile" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="member-service" />
-        <module name="user-service" />
-        <module name="common-service" />
-        <module name="file-service" />
         <module name="gateway-service" />
         <module name="strength-service" />
+        <module name="member-service" />
+        <module name="redis-service" />
+        <module name="user-service" />
+        <module name="api" />
+        <module name="file-service" />
+        <module name="common-core" />
+        <module name="common-db" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="class-service" target="1.8" />
+      <module name="common-service" target="1.8" />
       <module name="jianshen" target="1.8" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="api" options="-parameters" />
       <module name="class-service" options="-parameters" />
+      <module name="common-core" options="-parameters" />
+      <module name="common-db" options="-parameters" />
       <module name="common-service" options="-parameters" />
       <module name="file-service" options="-parameters" />
       <module name="gateway-service" options="-parameters" />
       <module name="jianshen" options="-parameters" />
       <module name="member-service" options="-parameters" />
+      <module name="redis-service" options="-parameters" />
       <module name="springboot97s0t" options="" />
       <module name="strength-service" options="-parameters" />
       <module name="user-service" options="-parameters" />

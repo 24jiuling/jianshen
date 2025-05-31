@@ -12,11 +12,14 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 
+import com.api.annotation.RemoteCacheEvict;
+import com.api.annotation.RemoteCacheable;
+import com.common.core.utils.R;
 import com.common.entity.ZhidaoxiangmuEntity;
 import com.common.entity.view.ZhidaoxiangmuView;
 import com.common.utils.MPUtil;
+
 import com.common.utils.PageUtils;
-import com.common.utils.R;
 import com.strength.service.ZhidaoxiangmuService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +52,7 @@ public class ZhidaoxiangmuController {
     /**
      * 后端列表
      */
+    @RemoteCacheable(key = "'zhidaoxiangmu:page:' + #params.hashCode()")
     @RequestMapping("/page")
     public R page(@RequestParam Map<String, Object> params, ZhidaoxiangmuEntity zhidaoxiangmu,
                   HttpServletRequest request){
@@ -61,6 +65,7 @@ public class ZhidaoxiangmuController {
     /**
      * 前端列表
      */
+    @RemoteCacheable(key = "'zhidaoxiangmu:list:' + #params.hashCode()")
     @RequestMapping("/list")
     public R list(@RequestParam Map<String, Object> params,ZhidaoxiangmuEntity zhidaoxiangmu,
 		HttpServletRequest request){
@@ -72,6 +77,7 @@ public class ZhidaoxiangmuController {
 	/**
      * 列表
      */
+    @RemoteCacheable(key = "'zhidaoxiangmu:lists:' + #zhidaoxiangmu.hashCode()")
     @RequestMapping("/lists")
     public R list( ZhidaoxiangmuEntity zhidaoxiangmu){
        	EntityWrapper<ZhidaoxiangmuEntity> ew = new EntityWrapper<ZhidaoxiangmuEntity>();
@@ -82,6 +88,7 @@ public class ZhidaoxiangmuController {
 	 /**
      * 查询
      */
+     @RemoteCacheable(key = "'zhidaoxiangmu:query:' + #zhidaoxiangmu.hashCode()")
     @RequestMapping("/query")
     public R query(ZhidaoxiangmuEntity zhidaoxiangmu){
         EntityWrapper< ZhidaoxiangmuEntity> ew = new EntityWrapper< ZhidaoxiangmuEntity>();
@@ -93,6 +100,7 @@ public class ZhidaoxiangmuController {
     /**
      * 后端详情
      */
+    @RemoteCacheable(key = "'zhidaoxiangmu:info:' + #id")
     @RequestMapping("/info/{id}")
     public R info(@PathVariable("id") Long id){
         ZhidaoxiangmuEntity zhidaoxiangmu = zhidaoxiangmuService.selectById(id);
@@ -102,18 +110,17 @@ public class ZhidaoxiangmuController {
     /**
      * 前端详情
      */
+    @RemoteCacheable(key = "'zhidaoxiangmu:detail:' + #id")
     @RequestMapping("/detail/{id}")
     public R detail(@PathVariable("id") Long id){
         ZhidaoxiangmuEntity zhidaoxiangmu = zhidaoxiangmuService.selectById(id);
         return R.ok().put("data", zhidaoxiangmu);
     }
 
-
-
-
     /**
      * 后端保存
      */
+    @RemoteCacheEvict(key = "'zhidaoxiangmu:*'")
     @RequestMapping("/save")
     public R save(@RequestBody ZhidaoxiangmuEntity zhidaoxiangmu, HttpServletRequest request){
     	zhidaoxiangmu.setId(new Date().getTime()+new Double(Math.floor(Math.random()*1000)).longValue());
@@ -125,6 +132,7 @@ public class ZhidaoxiangmuController {
     /**
      * 前端保存
      */
+    @RemoteCacheEvict(key = "'zhidaoxiangmu:*'")
     @RequestMapping("/add")
     public R add(@RequestBody ZhidaoxiangmuEntity zhidaoxiangmu, HttpServletRequest request){
     	zhidaoxiangmu.setId(new Date().getTime()+new Double(Math.floor(Math.random()*1000)).longValue());
@@ -136,6 +144,7 @@ public class ZhidaoxiangmuController {
     /**
      * 修改
      */
+    @RemoteCacheEvict(key = "'zhidaoxiangmu:*'")
     @RequestMapping("/update")
     public R update(@RequestBody ZhidaoxiangmuEntity zhidaoxiangmu, HttpServletRequest request){
         //ValidatorUtils.validateEntity(zhidaoxiangmu);
@@ -147,6 +156,7 @@ public class ZhidaoxiangmuController {
     /**
      * 删除
      */
+    @RemoteCacheEvict(key = "'zhidaoxiangmu:*'")
     @RequestMapping("/delete")
     public R delete(@RequestBody Long[] ids){
         zhidaoxiangmuService.deleteBatchIds(Arrays.asList(ids));

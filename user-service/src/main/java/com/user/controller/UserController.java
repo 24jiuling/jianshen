@@ -7,12 +7,15 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.api.annotation.RemoteCacheEvict;
+import com.api.annotation.RemoteCacheable;
 import com.common.annotation.IgnoreAuth;
+import com.common.core.utils.R;
 import com.common.entity.UserEntity;
 
 import com.common.utils.MPUtil;
 import com.common.utils.PageUtils;
-import com.common.utils.R;
+
 
 import com.user.service.TokenService;
 import com.user.service.UserService;
@@ -98,6 +101,7 @@ public class UserController{
 	/**
      * 列表
      */
+	@RemoteCacheable(key = "'users:page:' + #params.hashCode()")
     @RequestMapping("/page")
     public R page(@RequestParam Map<String, Object> params,UserEntity user){
         EntityWrapper<UserEntity> ew = new EntityWrapper<UserEntity>();
@@ -108,6 +112,7 @@ public class UserController{
 	/**
      * 列表
      */
+	@RemoteCacheable(key = "'users:list:' + #params.hashCode()")
     @RequestMapping("/list")
     public R list( UserEntity user){
        	EntityWrapper<UserEntity> ew = new EntityWrapper<UserEntity>();
@@ -118,6 +123,7 @@ public class UserController{
     /**
      * 信息
      */
+	@RemoteCacheable(key = "'users:info:' + #id")
     @RequestMapping("/info/{id}")
     public R info(@PathVariable("id") String id){
         UserEntity user = userService.selectById(id);
@@ -127,6 +133,7 @@ public class UserController{
     /**
      * 获取用户的session用户信息
      */
+	@RemoteCacheable(key = "'users:session:' + #session.hashCode()")
     @RequestMapping("/session")
     public R getCurrUser(HttpServletRequest request){
     	Long id = (Long)request.getSession().getAttribute("userId");
@@ -137,6 +144,7 @@ public class UserController{
     /**
      * 保存
      */
+	@RemoteCacheEvict(key = "'users:*'")
     @PostMapping("/save")
     public R save(@RequestBody UserEntity user){
 //    	ValidatorUtils.validateEntity(user);
@@ -150,6 +158,7 @@ public class UserController{
     /**
      * 修改
      */
+	@RemoteCacheEvict(key = "'users:*'")
     @RequestMapping("/update")
     public R update(@RequestBody UserEntity user){
 //        ValidatorUtils.validateEntity(user);
@@ -164,6 +173,7 @@ public class UserController{
     /**
      * 删除
      */
+	@RemoteCacheEvict(key = "'users:*'")
     @RequestMapping("/delete")
     public R delete(@RequestBody Long[] ids){
         userService.deleteBatchIds(Arrays.asList(ids));

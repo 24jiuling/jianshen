@@ -6,11 +6,14 @@ import java.util.Arrays;
 import java.util.Map;
 
 
+import com.api.annotation.RemoteCacheEvict;
+import com.api.annotation.RemoteCacheable;
 import com.common.annotation.IgnoreAuth;
+import com.common.core.utils.R;
 import com.common.entity.ConfigEntity;
 import com.common.utils.PageUtils;
-import com.common.utils.R;
-;
+
+
 import com.user.service.ConfigService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
@@ -39,6 +42,7 @@ public class ConfigController{
 	/**
      * 列表
      */
+    @RemoteCacheable(key = "'config:page:' + #params.hashCode()")
     @RequestMapping("/page")
     public R page(@RequestParam Map<String, Object> params, ConfigEntity config){
         EntityWrapper<ConfigEntity> ew = new EntityWrapper<ConfigEntity>();
@@ -49,6 +53,7 @@ public class ConfigController{
 	/**
      * 列表
      */
+    @RemoteCacheable(key = "'config:list:' + #params.hashCode()")
     @IgnoreAuth
     @RequestMapping("/list")
     public R list(@RequestParam Map<String, Object> params,ConfigEntity config){
@@ -60,6 +65,7 @@ public class ConfigController{
     /**
      * 信息
      */
+    @RemoteCacheable(key = "'config:info:' + #id")
     @RequestMapping("/info/{id}")
     public R info(@PathVariable("id") String id){
         ConfigEntity config = configService.selectById(id);
@@ -69,6 +75,7 @@ public class ConfigController{
     /**
      * 详情
      */
+     @RemoteCacheable(key = "'config:detail:' + #id")
     @IgnoreAuth
     @RequestMapping("/detail/{id}")
     public R detail(@PathVariable("id") String id){
@@ -79,6 +86,7 @@ public class ConfigController{
     /**
      * 根据name获取信息
      */
+    @RemoteCacheable(key = "'config:info:' + #params.hashCode()")
     @RequestMapping("/info")
     public R infoByName(@RequestParam String name){
         ConfigEntity config = configService.selectOne(new EntityWrapper<ConfigEntity>().eq("name", "faceFile"));
@@ -88,6 +96,7 @@ public class ConfigController{
     /**
      * 保存
      */
+    @RemoteCacheEvict(key = "'config:*'")
     @PostMapping("/save")
     public R save(@RequestBody ConfigEntity config){
 //    	ValidatorUtils.validateEntity(config);
@@ -98,6 +107,7 @@ public class ConfigController{
     /**
      * 修改
      */
+    @RemoteCacheEvict(key = "'config:*'")
     @RequestMapping("/update")
     public R update(@RequestBody ConfigEntity config){
 //        ValidatorUtils.validateEntity(config);
@@ -108,6 +118,7 @@ public class ConfigController{
     /**
      * 删除
      */
+    @RemoteCacheEvict(key = "'config:*'")
     @RequestMapping("/delete")
     public R delete(@RequestBody Long[] ids){
     	configService.deleteBatchIds(Arrays.asList(ids));

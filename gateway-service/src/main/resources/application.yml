@@ -36,6 +36,11 @@ spring:
           uri: lb://file-service
           predicates:
             - Path=/jiepin/**
+        - id: redis
+          uri: lb://redis-service
+          predicates:
+            - Path=/redis/**
+
 
 logging:
   level:

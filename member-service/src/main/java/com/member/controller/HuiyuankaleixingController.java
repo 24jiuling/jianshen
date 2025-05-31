@@ -12,11 +12,14 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 
+import com.api.annotation.RemoteCacheEvict;
+import com.api.annotation.RemoteCacheable;
+import com.common.core.utils.R;
 import com.common.entity.HuiyuankaleixingEntity;
 import com.common.entity.view.HuiyuankaleixingView;
 import com.common.utils.MPUtil;
 import com.common.utils.PageUtils;
-import com.common.utils.R;
+
 import com.member.service.HuiyuankaleixingService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +51,7 @@ public class HuiyuankaleixingController {
     /**
      * 后端列表
      */
+    @RemoteCacheable(key = "'huiyuankaleixing:page:' + #params.hashCode()")
     @RequestMapping("/page")
     public R page(@RequestParam Map<String, Object> params, HuiyuankaleixingEntity huiyuankaleixing,
                   HttpServletRequest request){
@@ -60,6 +64,7 @@ public class HuiyuankaleixingController {
     /**
      * 前端列表
      */
+    @RemoteCacheable(key = "'huiyuankaleixing:list:' + #params.hashCode()")
     @RequestMapping("/list")
     public R list(@RequestParam Map<String, Object> params,HuiyuankaleixingEntity huiyuankaleixing,
 		HttpServletRequest request){
@@ -71,6 +76,7 @@ public class HuiyuankaleixingController {
 	/**
      * 列表
      */
+    @RemoteCacheable(key = "'huiyuankaleixing:lists:' + #huiyuankaleixing.hashCode()")
     @RequestMapping("/lists")
     public R list( HuiyuankaleixingEntity huiyuankaleixing){
        	EntityWrapper<HuiyuankaleixingEntity> ew = new EntityWrapper<HuiyuankaleixingEntity>();
@@ -81,6 +87,7 @@ public class HuiyuankaleixingController {
 	 /**
      * 查询
      */
+     @RemoteCacheable(key = "'huiyuankaleixing:lists:' + #huiyuankaleixing.hashCode()")
     @RequestMapping("/query")
     public R query(HuiyuankaleixingEntity huiyuankaleixing){
         EntityWrapper< HuiyuankaleixingEntity> ew = new EntityWrapper< HuiyuankaleixingEntity>();
@@ -92,6 +99,7 @@ public class HuiyuankaleixingController {
     /**
      * 后端详情
      */
+     @RemoteCacheable(key = "'huiyuankaleixing:info:' + #id")
     @RequestMapping("/info/{id}")
     public R info(@PathVariable("id") Long id){
         HuiyuankaleixingEntity huiyuankaleixing = huiyuankaleixingService.selectById(id);
@@ -101,7 +109,8 @@ public class HuiyuankaleixingController {
     /**
      * 前端详情
      */
-    @RequestMapping("/detail/{id}")
+     @RemoteCacheable(key = "'huiyuankaleixing:info:' + #id")
+     @RequestMapping("/detail/{id}")
     public R detail(@PathVariable("id") Long id){
         HuiyuankaleixingEntity huiyuankaleixing = huiyuankaleixingService.selectById(id);
         return R.ok().put("data", huiyuankaleixing);
@@ -113,6 +122,7 @@ public class HuiyuankaleixingController {
     /**
      * 后端保存
      */
+    @RemoteCacheEvict(key = "'huiyuankaleixing:*'")
     @RequestMapping("/save")
     public R save(@RequestBody HuiyuankaleixingEntity huiyuankaleixing, HttpServletRequest request){
     	huiyuankaleixing.setId(new Date().getTime()+new Double(Math.floor(Math.random()*1000)).longValue());
@@ -124,6 +134,7 @@ public class HuiyuankaleixingController {
     /**
      * 前端保存
      */
+    @RemoteCacheEvict(key = "'huiyuankaleixing:*'")
     @RequestMapping("/add")
     public R add(@RequestBody HuiyuankaleixingEntity huiyuankaleixing, HttpServletRequest request){
     	huiyuankaleixing.setId(new Date().getTime()+new Double(Math.floor(Math.random()*1000)).longValue());
@@ -135,6 +146,7 @@ public class HuiyuankaleixingController {
     /**
      * 修改
      */
+    @RemoteCacheEvict(key = "'huiyuankaleixing:*'")
     @RequestMapping("/update")
     public R update(@RequestBody HuiyuankaleixingEntity huiyuankaleixing, HttpServletRequest request){
         //ValidatorUtils.validateEntity(huiyuankaleixing);
@@ -146,6 +158,7 @@ public class HuiyuankaleixingController {
     /**
      * 删除
      */
+    @RemoteCacheEvict(key = "'huiyuankaleixing:*'")
     @RequestMapping("/delete")
     public R delete(@RequestBody Long[] ids){
         huiyuankaleixingService.deleteBatchIds(Arrays.asList(ids));
