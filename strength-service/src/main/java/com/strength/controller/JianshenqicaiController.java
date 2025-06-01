@@ -1,6 +1,8 @@
 package com.strength.controller;
 import java.util.*;
 import javax.servlet.http.HttpServletRequest;
+
+import com.alibaba.fastjson.JSON;
 import com.api.annotation.RemoteCacheable;
 import com.api.annotation.RemoteCacheEvict;
 import com.common.core.utils.R;
@@ -25,7 +27,7 @@ public class JianshenqicaiController {
     /**
      * 后端分页列表
      */
-    @RemoteCacheable(key = "'jianshenqicai:page:' + #params.hashCode()")
+    @RemoteCacheable(key = "'jianshenqicai:page:' + #jianshenqicai.hashCode()")
     @RequestMapping("/page")
     public R page(@RequestParam Map<String, Object> params, JianshenqicaiEntity jianshenqicai, HttpServletRequest request) {
         EntityWrapper<JianshenqicaiEntity> ew = new EntityWrapper<>();
@@ -36,7 +38,7 @@ public class JianshenqicaiController {
     /**
      * 前端分页列表
      */
-    @RemoteCacheable(key = "'jianshenqicai:list:' + #params.hashCode()")
+    @RemoteCacheable(key = "'jianshenqicai:list:' + #jianshenqicai.hashCode()")
     @RequestMapping("/list")
     public R list(@RequestParam Map<String, Object> params, JianshenqicaiEntity jianshenqicai, HttpServletRequest request) {
         EntityWrapper<JianshenqicaiEntity> ew = new EntityWrapper<>();
@@ -96,6 +98,8 @@ public class JianshenqicaiController {
     public R save(@RequestBody JianshenqicaiEntity jianshenqicai, HttpServletRequest request) {
         jianshenqicai.setId(new Date().getTime() + (long)(Math.floor(Math.random() * 1000)));
         jianshenqicaiService.insert(jianshenqicai);
+        System.out.println("保存健身活动实体：" + JSON.toJSONString(jianshenqicai));
+
         return R.ok();
     }
 

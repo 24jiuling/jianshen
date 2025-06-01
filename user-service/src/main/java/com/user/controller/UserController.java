@@ -101,7 +101,7 @@ public class UserController{
 	/**
      * 列表
      */
-	@RemoteCacheable(key = "'users:page:' + #params.hashCode()")
+	@RemoteCacheable(key = "'users:page:' + #users.hashCode()")
     @RequestMapping("/page")
     public R page(@RequestParam Map<String, Object> params,UserEntity user){
         EntityWrapper<UserEntity> ew = new EntityWrapper<UserEntity>();
@@ -112,7 +112,7 @@ public class UserController{
 	/**
      * 列表
      */
-	@RemoteCacheable(key = "'users:list:' + #params.hashCode()")
+	@RemoteCacheable(key = "'users:list:' + #users.hashCode()")
     @RequestMapping("/list")
     public R list( UserEntity user){
        	EntityWrapper<UserEntity> ew = new EntityWrapper<UserEntity>();

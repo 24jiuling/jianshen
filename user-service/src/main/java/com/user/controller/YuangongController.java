@@ -122,7 +122,7 @@ public class YuangongController {
     /**
      * 后端列表
      */
-	@RemoteCacheable(key = "'yuangong:page:' + #params.hashCode()")
+	@RemoteCacheable(key = "'yuangong:page:' + #yuangong.hashCode()")
     @RequestMapping("/page")
     public R page(@RequestParam Map<String, Object> params,YuangongEntity yuangong,
 		HttpServletRequest request){
@@ -135,7 +135,7 @@ public class YuangongController {
     /**
      * 前端列表
      */
-	@RemoteCacheable(key = "'yuangong:list:' + #params.hashCode()")
+	@RemoteCacheable(key = "'yuangong:list:' + #yuangong.hashCode()")
     @RequestMapping("/list")
     public R list(@RequestParam Map<String, Object> params,YuangongEntity yuangong,
 		HttpServletRequest request){

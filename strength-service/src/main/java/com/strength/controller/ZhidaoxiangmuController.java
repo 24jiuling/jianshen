@@ -52,7 +52,7 @@ public class ZhidaoxiangmuController {
     /**
      * 后端列表
      */
-    @RemoteCacheable(key = "'zhidaoxiangmu:page:' + #params.hashCode()")
+    @RemoteCacheable(key = "'zhidaoxiangmu:page:' + #zhidaoxiangmu.hashCode()")
     @RequestMapping("/page")
     public R page(@RequestParam Map<String, Object> params, ZhidaoxiangmuEntity zhidaoxiangmu,
                   HttpServletRequest request){
@@ -65,7 +65,7 @@ public class ZhidaoxiangmuController {
     /**
      * 前端列表
      */
-    @RemoteCacheable(key = "'zhidaoxiangmu:list:' + #params.hashCode()")
+    @RemoteCacheable(key = "'zhidaoxiangmu:list:' + #zhidaoxiangmu.hashCode()")
     @RequestMapping("/list")
     public R list(@RequestParam Map<String, Object> params,ZhidaoxiangmuEntity zhidaoxiangmu,
 		HttpServletRequest request){

@@ -42,7 +42,7 @@ public class ConfigController{
 	/**
      * 列表
      */
-    @RemoteCacheable(key = "'config:page:' + #params.hashCode()")
+    @RemoteCacheable(key = "'config:page:' + #config.hashCode()")
     @RequestMapping("/page")
     public R page(@RequestParam Map<String, Object> params, ConfigEntity config){
         EntityWrapper<ConfigEntity> ew = new EntityWrapper<ConfigEntity>();
@@ -53,7 +53,7 @@ public class ConfigController{
 	/**
      * 列表
      */
-    @RemoteCacheable(key = "'config:list:' + #params.hashCode()")
+    @RemoteCacheable(key = "'config:list:' + #config.hashCode()")
     @IgnoreAuth
     @RequestMapping("/list")
     public R list(@RequestParam Map<String, Object> params,ConfigEntity config){

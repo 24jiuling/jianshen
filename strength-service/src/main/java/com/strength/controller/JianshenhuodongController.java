@@ -29,7 +29,7 @@ public class JianshenhuodongController {
     /**
      * 后端分页列表
      */
-    @RemoteCacheable(key = "'jianshenhuodong:page:' + #params.hashCode()")
+    @RemoteCacheable(key = "'jianshenhuodong:page:' + #jianshenhuodong.hashCode()")
     @RequestMapping("/page")
     public R page(@RequestParam Map<String, Object> params, JianshenhuodongEntity jianshenhuodong, HttpServletRequest request){
         EntityWrapper<JianshenhuodongEntity> ew = new EntityWrapper<>();
@@ -40,7 +40,7 @@ public class JianshenhuodongController {
     /**
      * 前端分页列表
      */
-    @RemoteCacheable(key = "'jianshenhuodong:list:' + #params.hashCode()")
+    @RemoteCacheable(key = "'jianshenhuodong:list:' + #jianshenhuodong.hashCode()")
     @RequestMapping("/list")
     public R list(@RequestParam Map<String, Object> params, JianshenhuodongEntity jianshenhuodong, HttpServletRequest request){
         EntityWrapper<JianshenhuodongEntity> ew = new EntityWrapper<>();

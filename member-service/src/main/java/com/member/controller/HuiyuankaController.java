@@ -50,7 +50,7 @@ public class HuiyuankaController {
     /**
      * 后端列表
      */
-    @RemoteCacheable(key = "'huiyuanka:page:' + #params.hashCode()")
+    @RemoteCacheable(key = "'huiyuanka:page:' + #huiyuanka.hashCode()")
     @RequestMapping("/page")
     public R page(@RequestParam Map<String, Object> params, HuiyuankaEntity huiyuanka,
                   HttpServletRequest request){
@@ -68,7 +68,7 @@ public class HuiyuankaController {
     /**
      * 前端列表
      */
-    @RemoteCacheable(key = "'huiyuanka:list:' + #params.hashCode()")
+    @RemoteCacheable(key = "'huiyuanka:list:' + #huiyuanka.hashCode()")
     @RequestMapping("/list")
     public R list(@RequestParam Map<String, Object> params,HuiyuankaEntity huiyuanka,
 		HttpServletRequest request){

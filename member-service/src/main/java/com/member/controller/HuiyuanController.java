@@ -116,7 +116,7 @@ public class HuiyuanController {
     /**
      * 后端列表
      */
-	@RemoteCacheable(key = "'huiyuan:page:' + #params.hashCode()")
+	@RemoteCacheable(key = "'huiyuan:page:' + #huiyuan.hashCode()")
     @RequestMapping("/page")
     public R page(@RequestParam Map<String, Object> params, HuiyuanEntity huiyuan,
 				  HttpServletRequest request){
@@ -134,7 +134,7 @@ public class HuiyuanController {
     /**
      * 前端列表
      */
-	@RemoteCacheable(key = "'huiyuan:list:' + #params.hashCode()")
+	@RemoteCacheable(key = "'huiyuan:list:' + #huiyuan.hashCode()")
     @RequestMapping("/list")
     public R list(@RequestParam Map<String, Object> params,HuiyuanEntity huiyuan,
 		HttpServletRequest request){

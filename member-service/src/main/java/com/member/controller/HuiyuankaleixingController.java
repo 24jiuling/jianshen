@@ -51,7 +51,7 @@ public class HuiyuankaleixingController {
     /**
      * 后端列表
      */
-    @RemoteCacheable(key = "'huiyuankaleixing:page:' + #params.hashCode()")
+    @RemoteCacheable(key = "'huiyuankaleixing:page:' + #huiyuankaleixing.hashCode()")
     @RequestMapping("/page")
     public R page(@RequestParam Map<String, Object> params, HuiyuankaleixingEntity huiyuankaleixing,
                   HttpServletRequest request){
@@ -64,7 +64,7 @@ public class HuiyuankaleixingController {
     /**
      * 前端列表
      */
-    @RemoteCacheable(key = "'huiyuankaleixing:list:' + #params.hashCode()")
+    @RemoteCacheable(key = "'huiyuankaleixing:list:' + #huiyuankaleixing.hashCode()")
     @RequestMapping("/list")
     public R list(@RequestParam Map<String, Object> params,HuiyuankaleixingEntity huiyuankaleixing,
 		HttpServletRequest request){

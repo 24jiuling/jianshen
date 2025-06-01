@@ -46,7 +46,7 @@ public class JiaolianxinxiController {
     /**
      * 后端列表
      */
-    @RemoteCacheable(key = "'jiaolianxinxi:page:' + #params.hashCode()")
+    @RemoteCacheable(key = "'jiaolianxinxi:page:' + #jiaolianxinxi.hashCode()")
     @RequestMapping("/page")
     public R page(@RequestParam Map<String, Object> params, JiaolianxinxiEntity jiaolianxinxi,
                   HttpServletRequest request){

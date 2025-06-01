@@ -52,7 +52,7 @@ public class JiepinController {
     /**
      * 后端列表
      */
-    @RemoteCacheable(key = "'jiepin:page:' + #params.hashCode()")
+    @RemoteCacheable(key = "'jiepin:page:' + #jiepin.hashCode()")
     @RequestMapping("/page")
     public R page(@RequestParam Map<String, Object> params, JiepinEntity jiepin,
                   HttpServletRequest request){
@@ -70,7 +70,7 @@ public class JiepinController {
     /**
      * 前端列表
      */
-    @RemoteCacheable(key = "'jiepin:list:' + #params.hashCode()")
+    @RemoteCacheable(key = "'jiepin:list:' + #jiepin.hashCode()")
     @RequestMapping("/list")
     public R list(@RequestParam Map<String, Object> params,JiepinEntity jiepin,
 		HttpServletRequest request){
